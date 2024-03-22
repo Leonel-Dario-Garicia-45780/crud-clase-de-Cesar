@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<form action="/producto_añadido" method="post" >
+    <input name="codigo" id="codigo" type="number" placeholder="codigo" >
+    <input name="nombre" id="nombre" type="text"   placeholder="nombre" >
+    <input name="precio" id="precio" type="number" placeholder="precio" >
+    <select name="categoria" id="categoria" aria-placeholder="catagoria">
+        <option value=""> selecciona la categoria </option>
+        {% for categoria in categorias %}
+        <option value="{{categoria['_id']}}">{{categoria['nombre']}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">añadir</button>
+</form>
+</body>
+</html>

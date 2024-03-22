@@ -1,0 +1,22 @@
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        </head>
+        <body>
+            <form action="/editar/{{ producto['_id'] }}" method="post">
+                <input name="codigo_edit" type="hidden" value="{{ producto['_id'] }}">
+                <input  name="nombre_edit"    id="nombre_edi" type="text"   placeholder="nombre"  value="{{producto["nombre"]}}">
+                <input  name="precio_edit"    id="precio_edi" type="number" placeholder="precio"  value="{{producto["precio"]}}">
+                <select name="categoria_edit" id="categoria_edi" aria-placeholder="catagoria">
+                    <option value=""> selecciona la categoria </option>
+                    {% for categoria in categorias %}
+                    <option value="{{categoria['_id']}}">{{categoria['nombre']}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">editar</button>
+            </form>
+        </body>
+        </html>
