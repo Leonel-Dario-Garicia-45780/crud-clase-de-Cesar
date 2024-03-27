@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Eliminación</title>
+</head>
+<body>
+    <h2>¿Está seguro de que desea eliminar este producto?</h2>
+    <form action="/eliminar/{{ producto_id }}" method="post">
+        <input type="submit" name="confirmar" value="Sí, eliminar">
+        <a href="/tabla_productos">
+        <button>
+            Cancelar
+        </button>
+        </a>
+    </form>
+</body>
+</html>
