@@ -1,39 +1,30 @@
 from aplicaion import app, productos, usuarios, categorias
 from flask import render_template,request,redirect , session
-import yagmail #para el login. su funcion es mandar un correo
 import pymongo #para manipular la base de datos mongodb(en este caso es atlas)
 from bson import ObjectId # bson es de pymongo i traemos el objetid para manipular ids
 
-# Función y ruta de inicio de sesión (ruta raíz)
-@app.route("/", methods=[ "GET","POST"])
-def iniciox():
+app.secret_key = 'your_secret_key'
+
+# Función y ruta de inicio de sesión
+@app.route("/", methods=["GET", "POST"])
+def inicio_sesion():
+    if request.method == "POST":
+        correo = request.json.get("correo")
+        contraseña = request.json.get("contraseña")
+
+        # Verificar si el correo y la contraseña son válidos
+        user = usuarios.find_one({"nombre": correo, "contraseña": contraseña})
+        if user:
+            # Si las credenciales son correctas, iniciar sesión y redirigir a la tabla de productos
+            session["correo"] = correo
+            return jsonify({"redireccionar": "/tabla_productos"})
+        else:
+            return jsonify({"error": "Correo o contraseña incorrectos"})
+
     return render_template("1 inisiodesecion.html")
 
-
-""" @app.route("/", methods=["GET", "POST"])
-def inicio():
-    if request.method == "POST":
-        correo = request.form.get("correo")
-        contraseña = request.form.get("contraseña")
-
-        # Verifica si los campos de correo y contraseña no están vacíos
-        if correo and contraseña:
-            # Intenta encontrar un usuario en la base de datos con las credenciales proporcionadas
-            user = usuarios.find_one({"correo": correo, "contraseña": contraseña})
-            if user:
-                # Si se encuentra el usuario, inicia sesión y redirige a la página de la tabla de productos
-                session["correo"] = correo
-                return redirect("/tabla_productos")
-            else:
-                mensaje = "Correo o contraseña incorrectos"
-        else:
-            mensaje = "Por favor, ingrese correo y contraseña"
-
-    return render_template("1 inisiodesecion.html") """
-
-
-#funcion y ruta de categorias
-@app.route("/categorias", methods=["GET","POST"])
+# Ruta de categorías
+@app.route("/categorias", methods=["GET", "POST"])
 def categorias_añadir():
     mensaje = None
     if request.method == "POST":
@@ -50,54 +41,49 @@ def categorias_añadir():
                 mensaje = "Debe ingresar el nombre de la categoría"
         except pymongo.errors.PyMongoError as error:
             mensaje = f"Error de MongoDB: {error}"
-            
     elif request.method == "GET":
-        # Aquí puedes manejar la lógica para mostrar categorías existentes u otras acciones GET
         mensaje = "Página de categorías (GET)"
     return render_template("2 categoria.html", mensaje=mensaje)
 
-
-
-#funcion y ruta de agregar productos
-@app.route("/producto_añadido", methods=["POST","GET"] )
-def producto_añadido(): 
-    mensaje=None
-    list_categorias=categorias.find()
+# Ruta para agregar productos
+@app.route("/producto_añadido", methods=["POST", "GET"])
+def producto_añadido():
+    mensaje = None
+    list_categorias = categorias.find()
     try:
-        #gracias a este if no hay errores pero no lo entiendo
-        if request.method=="POST":
-            producto_codigo=request.form["codigo"]
-            producto_nombre=request.form["nombre"]
-            producto_precio=request.form["precio"]
-            id_categoria=request.form["categoria"]
+        if request.method == "POST":
+            producto_codigo = request.form["codigo"]
+            producto_nombre = request.form["nombre"]
+            producto_precio = request.form["precio"]
+            id_categoria = request.form["categoria"]
 
-            producto={
-                "codigo":int(producto_codigo),
-                "nombre":producto_nombre,
-                "precio":int(producto_precio),
-                "categoria":id_categoria
+            producto = {
+                "codigo": int(producto_codigo),
+                "nombre": producto_nombre,
+                "precio": int(producto_precio),
+                "categoria": id_categoria
             }
-            accion_añadir=productos.insert_one(producto)
+            accion_añadir = productos.insert_one(producto)
             if accion_añadir.acknowledged:
-                mensaje="agregado"
+                mensaje = "Producto agregado correctamente"
             else:
-                mensaje="error"
+                mensaje = "Error al agregar el producto"
 
     except pymongo.errors.PyMongoError as error:
         print(f"{error}")
-        #tener e cuenta que los datos que se traen de la bdd se deben renderisar
-    return render_template("3 producto_añadido.html", mensaje=mensaje, categorias=list_categorias )
 
-#funcion y ruta para mostrar productos en una tabla
-@app.route("/tabla_productos", methods=["GET","POST"])
+    return render_template("3 producto_añadido.html", mensaje=mensaje, categorias=list_categorias)
+
+# Ruta para mostrar productos en una tabla
+@app.route("/tabla_productos", methods=["GET", "POST"])
 def tabla_productos():
     try:
         lis_productos = productos.find()
         li_producto = []
 
         for p in lis_productos:
-            categoria_id = p.get('categoria')  # Obtener el ID de la categoría del producto
-            if categoria_id and ObjectId.is_valid(categoria_id):  # Verificar si el ID de la categoría es válido
+            categoria_id = p.get('categoria')
+            if categoria_id and ObjectId.is_valid(categoria_id):
                 categoria = categorias.find_one({'_id': ObjectId(categoria_id)})
                 if categoria:
                     p['categoria'] = categoria['nombre']
@@ -108,7 +94,7 @@ def tabla_productos():
 
     return render_template("4 tablaproductos.html", productos=li_producto)
 
-# funcion y ruta para editar un producto
+# Ruta para editar un producto
 @app.route("/editar/<producto_id>", methods=["GET", "POST"])
 def editar(producto_id):
     mensaje = None
@@ -120,8 +106,8 @@ def editar(producto_id):
             nuevo_nombre = request.form["nombre_edit"]
             nuevo_precio = int(request.form["precio_edit"])
             nueva_categoria = request.form["categoria_edit"]
-        
-            buscar = {"_id": ObjectId(producto_id)}  # Corregido aquí
+
+            buscar = {"_id": ObjectId(producto_id)}
             producto_editado = {
                 "$set": {
                     "nombre": nuevo_nombre,
@@ -143,12 +129,11 @@ def editar(producto_id):
 
     return render_template("5 editar.html", mensaje=mensaje, categorias=list_categorias, producto=producto)
 
-# funcion y ruta para eliminar un producto
+# Ruta para eliminar un producto
 @app.route("/eliminar/<producto_id>", methods=["GET", "POST"])
 def eliminar(producto_id):
-    mensaje = None # me acostumbre al mensaje
+    mensaje = None
     if request.method == "POST":
-        # este confirmar es del formulario del input
         if request.form.get("confirmar"):
             try:
                 resultado = productos.delete_one({"_id": ObjectId(producto_id)})
@@ -164,4 +149,3 @@ def eliminar(producto_id):
             return redirect("/tabla_productos")
     else:
         return render_template("6 preguntar eliminar.html", producto_id=producto_id)
-

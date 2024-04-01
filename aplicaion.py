@@ -6,6 +6,9 @@ app =Flask(__name__)
 #conecion a mongo atlas
 conexion= pymongo.MongoClient('mongodb+srv://gun45780:adso145780@cluster0.feqs5gd.mongodb.net/')
 
+# coneccion local
+# miCconexion = pymongo.MongoClient("mongodb://localhost:27017/")
+
 #base de datos
 basedeDatos=conexion['gestiondeproductos']
 
