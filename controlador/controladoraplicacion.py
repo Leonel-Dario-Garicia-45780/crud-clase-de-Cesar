@@ -1,5 +1,5 @@
 from aplicaion import app, productos, usuarios, categorias
-from flask import render_template,request,redirect , session
+from flask import render_template,request,redirect , session,jsonify
 import pymongo #para manipular la base de datos mongodb(en este caso es atlas)
 from bson import ObjectId # bson es de pymongo i traemos el objetid para manipular ids
 
