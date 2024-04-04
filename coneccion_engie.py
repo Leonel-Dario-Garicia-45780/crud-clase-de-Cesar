@@ -1,6 +1,7 @@
 from flask import Flask
-""" from flask_mongoengine import MongoEngine """#esta linea la comento proque se repite en modelos
+from flask_mongoengine import MongoEngine #esta linea la comento proque se repite en modelos
 from modelos import db, Producto, Usuario, Categoria
+
 
 app = Flask(__name__)
 app.secret_key = "123456lomasseguroqueexiste"
@@ -9,6 +10,10 @@ app.config["MONGODB_SETTINGS"] = {
     # esta coneccion le pedi ayuda a gpt
     "host": "mongodb+srv://gun45780:adso145780@cluster0.feqs5gd.mongodb.net/gestiondeproductos",
 }
+
+from categorias_controlador_o_rutas import *
+from productos_controlador_o_rutas import *
+from usuarios_controlador_o_rutas import *
 
 db.init_app(app)
 

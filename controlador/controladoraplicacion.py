@@ -1,4 +1,4 @@
-from aplicaion import app, productos, usuarios, categorias
+""" from aplicaion import app, productos, usuarios, categorias
 from flask import render_template,request,redirect , session,jsonify
 import pymongo #para manipular la base de datos mongodb(en este caso es atlas)
 from bson import ObjectId # bson es de pymongo i traemos el objetid para manipular ids
@@ -149,3 +149,4 @@ def eliminar(producto_id):
             return redirect("/tabla_productos")
     else:
         return render_template("6 preguntar eliminar.html", producto_id=producto_id)
+"""
