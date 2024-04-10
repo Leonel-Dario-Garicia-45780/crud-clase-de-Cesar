@@ -1,4 +1,4 @@
-""" from flask import Flask
+from flask import Flask
 import pymongo
 
 app =Flask(__name__)
@@ -17,7 +17,7 @@ productos=basedeDatos['productos']
 usuarios=basedeDatos['usuarios']
 categorias=basedeDatos['categorias']
 
-""" 
+
 """ 
 para crear el usuario
 @app.route("/")
@@ -39,11 +39,10 @@ para crear el usuario
         print(f"usuario no ingresado: {error}")
         return False
 """
-"""
+
 #importar controlador para que todo funcione (alla como aca)
 from controlador.controladoraplicacion import *
 
 #inicia la aplicacion
 if __name__=='__main__':
     app.run(port=3000, debug=True)
-"""

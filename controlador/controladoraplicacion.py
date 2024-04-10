@@ -1,13 +1,47 @@
-""" from aplicaion import app, productos, usuarios, categorias
+import urllib.request
+from aplicaion import app, productos, usuarios, categorias
 from flask import render_template,request,redirect , session,jsonify
 import pymongo #para manipular la base de datos mongodb(en este caso es atlas)
 from bson import ObjectId # bson es de pymongo i traemos el objetid para manipular ids
+import urllib
 
 app.secret_key = 'your_secret_key'
+
+# clases
+""" class Producto(db.Document):
+    codigo = db.StringField(required=True, max_lenth=50)
+    nombre = db.StringField(required=True, max_length=100)
+    precio = db.decimalfield(required=True)
+    categoria = db.StringField(required=True, max_length=100)
+
+class Usuario(db.Document):
+    correo = db.EmailField(required=True)
+    contraseña = db.StringField(required=True, max_lenth=50)
+
+class Categoria(db.Document):
+    nombre=db.StringField(required=True, max_lenth=100) """
+
+
+
+
+
 
 # Función y ruta de inicio de sesión
 @app.route("/", methods=["GET", "POST"])
 def inicio_sesion():
+    
+    recaptcha_response = request.form['g-recaptcha-response']
+    url='https://www.google.com/recaptcha/api/siteverify'
+    values={
+        "secret":'6LeKI7cpAAAAAERUp3iZ74F_2A45RfY-fjzsnnWL', # la clave sereta
+        "response": recaptcha_response
+    }
+    data=urllib.parse.urlencode(values).endcode()
+    req = urllib.request.Request(url, data=data)
+    response = urllib.request.urlopen(req)
+    result = json.loads(response.read().decode())
+    
+    
     if request.method == "POST":
         correo = request.json.get("correo")
         contraseña = request.json.get("contraseña")
@@ -149,4 +183,3 @@ def eliminar(producto_id):
             return redirect("/tabla_productos")
     else:
         return render_template("6 preguntar eliminar.html", producto_id=producto_id)
-"""

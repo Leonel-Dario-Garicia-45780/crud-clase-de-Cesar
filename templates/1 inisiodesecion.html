@@ -7,12 +7,18 @@
     <title>Document</title>
 </head>
 <body>
+    <!-- consumo de la api de recaptcha -->
+    <script src='https://www.google.com/recaptcha/api.js'> </script>
+
     <div class="cont_form">
         <form class="for_inicio"  action="/tabla_productos" method="post">
             <h1 class="h1_I_S">inicio de secion</h1>
             <!--el correo es el usuario -->
             <input type="text"     class="inputs" name="correo" id="correo" placeholder="correo">
             <input type="password" class="inputs" name="contraseña" id="contraseña" placeholder="contraseña">
+
+         <!--  clave publica   -->
+            <div class="g-recaptcha" data-sitekey="6LeKI7cpAAAAAGsW16Wa_o1vSKvf6GYmotuVAnZz"> </div>
 
             <button class="btn_ingresar"><p>ingresar</p></button>
 

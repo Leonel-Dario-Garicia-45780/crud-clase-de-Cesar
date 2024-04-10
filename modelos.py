@@ -1,4 +1,4 @@
-from flask_mongoengine import MongoEngine
+""" from flask_mongoengine import MongoEngine
 
 db=MongoEngine()
 
@@ -14,3 +14,5 @@ class Usuario(db.Document):
 
 class Categoria(db.Document):
     nombre=db.StringField(required=True, max_lenth=100)
+    
+ """
